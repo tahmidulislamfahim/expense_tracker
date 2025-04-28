@@ -10,8 +10,6 @@ void main() {
   //   ],
   // ).then(
   //   (_) =>
-  runApp(
-    App(),
-  );
+  runApp(App());
   // );
 }
