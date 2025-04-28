@@ -41,12 +41,13 @@ class _ExpensesState extends State<Expenses> {
         duration: const Duration(seconds: 3),
         content: const Text('Expense deleted'),
         action: SnackBarAction(
-            label: 'Undo',
-            onPressed: () {
-              setState(() {
-                _registeredExpenses.insert(expenseIndex, expense);
-              });
-            }),
+          label: 'Undo',
+          onPressed: () {
+            setState(() {
+              _registeredExpenses.insert(expenseIndex, expense);
+            });
+          },
+        ),
       ),
     );
   }
@@ -56,9 +57,7 @@ class _ExpensesState extends State<Expenses> {
     var width = MediaQuery.of(context).size.width;
     //var height = MediaQuery.of(context).size.height;
 
-    Widget mainContent = const Center(
-      child: Text('No exnpenses found.'),
-    );
+    Widget mainContent = const Center(child: Text('No exnpenses found.'));
     if (_registeredExpenses.isNotEmpty) {
       mainContent = ExpensesList(
         expenses: _registeredExpenses,
@@ -66,45 +65,42 @@ class _ExpensesState extends State<Expenses> {
       );
     }
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Expense Tracker'),
-      ),
-      body: width < 600
-          ? Column(
-              children: [
-                Chart(expenses: _registeredExpenses),
-                Expanded(child: mainContent),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 30.0, right: 16.0),
-                    child: FloatingActionButton(
-                      onPressed: _openAddExpenseOverlay,
-                      child: const Icon(Icons.add),
+      appBar: AppBar(title: const Text('Expense Tracker')),
+      body:
+          width < 600
+              ? Column(
+                children: [
+                  Chart(expenses: _registeredExpenses),
+                  Expanded(child: mainContent),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 30.0, right: 16.0),
+                      child: FloatingActionButton(
+                        onPressed: _openAddExpenseOverlay,
+                        child: const Icon(Icons.add),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            )
-          : Row(
-              children: [
-                Expanded(child: Chart(expenses: _registeredExpenses)),
-                const SizedBox(
-                  width: 20,
-                ),
-                Expanded(child: mainContent),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 30.0, right: 16.0),
-                    child: FloatingActionButton(
-                      onPressed: _openAddExpenseOverlay,
-                      child: const Icon(Icons.add),
+                ],
+              )
+              : Row(
+                children: [
+                  Expanded(child: Chart(expenses: _registeredExpenses)),
+                  const SizedBox(width: 20),
+                  Expanded(child: mainContent),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 30.0, right: 16.0),
+                      child: FloatingActionButton(
+                        onPressed: _openAddExpenseOverlay,
+                        child: const Icon(Icons.add),
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
     );
   }
 }
