@@ -3,34 +3,56 @@ import 'package:expense_tracker/widgets/expenses_list/expense_item.dart';
 import 'package:flutter/material.dart';
 
 class ExpensesList extends StatelessWidget {
-  const ExpensesList(
-      {super.key, required this.expenses, required this.onRemoveExpense});
+  const ExpensesList({
+    super.key,
+    required this.expenses,
+    required this.onRemoveExpense,
+    required this.onEditExpenseTap,
+  });
+
   final List<Expense> expenses;
   final void Function(Expense expense) onRemoveExpense;
+  final void Function(Expense expense, int index) onEditExpenseTap;
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: expenses.length,
-      itemBuilder: (ctx, index) => Dismissible(
-        key: ValueKey(expenses[index]),
-        background: Container(
-          // ignore: deprecated_member_use
-          color: Theme.of(context).colorScheme.error.withOpacity(0.75),
-          margin: Theme.of(context).cardTheme.margin,
-          alignment: Alignment.centerRight,
-          padding: const EdgeInsets.only(right: 20),
-          child: const Icon(
-            Icons.delete,
-            color: Colors.white,
-            size: 40,
+      itemBuilder: (ctx, index) {
+        return Dismissible(
+          key: ValueKey(expenses[index].id),
+          direction: DismissDirection.horizontal,
+          background: Container(
+            color: Colors.blueAccent,
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.only(left: 20),
+            child: const Icon(Icons.edit, color: Colors.white, size: 40),
           ),
-        ),
-        onDismissed: (direction) {
-          onRemoveExpense(expenses[index]);
-        },
-        direction: DismissDirection.endToStart,
-        child: ExpenseItem(expenses[index]),
-      ),
+          secondaryBackground: Container(
+            color: Theme.of(context).colorScheme.error.withOpacity(0.75),
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.only(right: 20),
+            child: const Icon(Icons.delete, color: Colors.white, size: 40),
+          ),
+          confirmDismiss: (direction) async {
+            if (direction == DismissDirection.startToEnd) {
+              // Open edit modal instead of dismissing
+              onEditExpenseTap(expenses[index], index);
+              return false; // Cancel dismissal
+            } else if (direction == DismissDirection.endToStart) {
+              // Allow dismissal to delete expense
+              return true;
+            }
+            return false;
+          },
+          onDismissed: (direction) {
+            if (direction == DismissDirection.endToStart) {
+              onRemoveExpense(expenses[index]);
+            }
+          },
+          child: ExpenseItem(expenses[index]),
+        );
+      },
     );
   }
 }

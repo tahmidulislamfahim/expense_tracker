@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:expense_tracker/widgets/chart/chart.dart';
 import 'package:expense_tracker/widgets/expenses_list/expenses_list.dart';
 import 'package:expense_tracker/widgets/new_expense.dart';
@@ -31,9 +30,30 @@ class _ExpensesState extends State<Expenses> {
     );
   }
 
+  void _openEditExpenseOverlay(Expense expense, int index) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder:
+          (ctx) => NewExpense(
+            existingExpense: expense,
+            existingIndex: index,
+            onAddExpense: _addExpense,
+            onEditExpense: _editExpense,
+          ),
+    );
+  }
+
   void _addExpense(Expense expense) async {
     setState(() {
       _registeredExpenses.add(expense);
+    });
+    await _saveExpensesToStorage();
+  }
+
+  void _editExpense(Expense updatedExpense, int index) async {
+    setState(() {
+      _registeredExpenses[index] = updatedExpense;
     });
     await _saveExpensesToStorage();
   }
@@ -66,16 +86,15 @@ class _ExpensesState extends State<Expenses> {
   Future<void> _saveExpensesToStorage() async {
     final prefs = await SharedPreferences.getInstance();
     final List<String> encodedExpenses =
-        _registeredExpenses
-            .map(
-              (expense) => jsonEncode({
-                'title': expense.title,
-                'amount': expense.amount,
-                'date': expense.date.toIso8601String(),
-                'category': expense.category.name,
-              }),
-            )
-            .toList();
+        _registeredExpenses.map((expense) {
+          return jsonEncode({
+            'id': expense.id, // now storing id
+            'title': expense.title,
+            'amount': expense.amount,
+            'date': expense.date.toIso8601String(),
+            'category': expense.category.name,
+          });
+        }).toList();
     await prefs.setStringList('expenses', encodedExpenses);
   }
 
@@ -88,6 +107,7 @@ class _ExpensesState extends State<Expenses> {
             encodedExpenses.map((str) {
               final json = jsonDecode(str);
               return Expense(
+                id: json['id'], // load id
                 title: json['title'],
                 amount: json['amount'],
                 date: DateTime.parse(json['date']),
@@ -113,6 +133,7 @@ class _ExpensesState extends State<Expenses> {
       mainContent = ExpensesList(
         expenses: _registeredExpenses,
         onRemoveExpense: _removeExpense,
+        onEditExpenseTap: _openEditExpenseOverlay, // pass edit callback
       );
     }
 
