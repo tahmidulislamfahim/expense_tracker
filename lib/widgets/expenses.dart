@@ -155,16 +155,6 @@ class _ExpensesState extends State<Expenses> {
                     ),
                   ),
                   Expanded(child: mainContent),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 30.0, right: 16.0),
-                      child: FloatingActionButton(
-                        onPressed: _openAddExpenseOverlay,
-                        child: const Icon(Icons.add),
-                      ),
-                    ),
-                  ),
                 ],
               )
               : Row(
@@ -188,18 +178,13 @@ class _ExpensesState extends State<Expenses> {
                   ),
                   const SizedBox(width: 20),
                   Expanded(child: mainContent),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 30.0, right: 16.0),
-                      child: FloatingActionButton(
-                        onPressed: _openAddExpenseOverlay,
-                        child: const Icon(Icons.add),
-                      ),
-                    ),
-                  ),
                 ],
               ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _openAddExpenseOverlay,
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
