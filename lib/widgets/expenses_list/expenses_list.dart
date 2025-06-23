@@ -36,11 +36,9 @@ class ExpensesList extends StatelessWidget {
           ),
           confirmDismiss: (direction) async {
             if (direction == DismissDirection.startToEnd) {
-              // Open edit modal instead of dismissing
               onEditExpenseTap(expenses[index], index);
-              return false; // Cancel dismissal
+              return false;
             } else if (direction == DismissDirection.endToStart) {
-              // Allow dismissal to delete expense
               return true;
             }
             return false;
