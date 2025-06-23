@@ -100,6 +100,10 @@ class _ExpensesState extends State<Expenses> {
     }
   }
 
+  double get _totalExpense {
+    return _registeredExpenses.fold(0.0, (sum, item) => sum + item.amount);
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -119,6 +123,16 @@ class _ExpensesState extends State<Expenses> {
               ? Column(
                 children: [
                   Chart(expenses: _registeredExpenses),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text(
+                      'Total: \$${_totalExpense.toStringAsFixed(2)}',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
                   Expanded(child: mainContent),
                   Align(
                     alignment: Alignment.bottomRight,
@@ -134,7 +148,23 @@ class _ExpensesState extends State<Expenses> {
               )
               : Row(
                 children: [
-                  Expanded(child: Chart(expenses: _registeredExpenses)),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Chart(expenses: _registeredExpenses),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Text(
+                            'Total: \$${_totalExpense.toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(width: 20),
                   Expanded(child: mainContent),
                   Align(

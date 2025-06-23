@@ -87,7 +87,7 @@ class _NewExpense extends State<NewExpense> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(32),
         child: Column(
           children: [
             TextField(
