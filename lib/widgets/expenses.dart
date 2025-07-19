@@ -161,8 +161,9 @@ class _ExpensesState extends State<Expenses> {
                 children: [
                   Expanded(
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Chart(expenses: _registeredExpenses),
+                        Flexible(child: Chart(expenses: _registeredExpenses)),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Text(
