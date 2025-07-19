@@ -31,7 +31,8 @@ class Chart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDarkMode =
-        MediaQuery.of(context).platformBrightness == Brightness.dark;
+        MediaQuery.of(context).platformBrightness ==
+        Brightness.dark;
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.symmetric(
@@ -39,58 +40,87 @@ class Chart extends StatelessWidget {
         horizontal: 8,
       ),
       width: double.infinity,
-      height: 180,
+      constraints: const BoxConstraints(
+        minHeight: 40,
+        maxHeight: 180,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         gradient: LinearGradient(
           colors: [
             // ignore: deprecated_member_use
-            Theme.of(context).colorScheme.primary.withOpacity(0.3),
+            Theme.of(
+              context,
+            ).colorScheme.primary.withOpacity(0.3),
             // ignore: deprecated_member_use
-            Theme.of(context).colorScheme.primary.withOpacity(0.0)
+            Theme.of(
+              context,
+            ).colorScheme.primary.withOpacity(0.0),
           ],
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
         ),
       ),
-      child: Column(
-        children: [
-          Expanded(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                for (final bucket in buckets) // alternative to map()
-                  ChartBar(
-                    fill: bucket.totalExpenses == 0
-                        ? 0
-                        : bucket.totalExpenses / maxTotalExpense,
-                  )
-              ],
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: buckets
-                .map(
-                  (bucket) => Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Icon(
-                        categoryIcons[bucket.category],
-                        color: isDarkMode
-                            ? Theme.of(context).colorScheme.secondary
-                            : Theme.of(context)
-                                .colorScheme
-                                .primary
-                                // ignore: deprecated_member_use
-                                .withOpacity(0.7),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final availableHeight = constraints.maxHeight;
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Row(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.end,
+                  children: [
+                    for (final bucket in buckets)
+                      ChartBar(
+                        fill:
+                            bucket.totalExpenses == 0
+                                ? 0
+                                : bucket.totalExpenses /
+                                    maxTotalExpense,
                       ),
-                    ),
+                  ],
+                ),
+              ),
+              // Only show icons if we have enough space (at least 24px for icons + some padding)
+              if (availableHeight >= 30)
+                SizedBox(
+                  height: availableHeight >= 60 ? 24 : 16,
+                  child: Row(
+                    children:
+                        buckets
+                            .map(
+                              (bucket) => Expanded(
+                                child: Icon(
+                                  categoryIcons[bucket
+                                      .category],
+                                  size:
+                                      availableHeight >= 60
+                                          ? 20
+                                          : 14,
+                                  color:
+                                      isDarkMode
+                                          ? Theme.of(
+                                                context,
+                                              )
+                                              .colorScheme
+                                              .secondary
+                                          : Theme.of(
+                                            context,
+                                          ).colorScheme.primary
+                                          // ignore: deprecated_member_use
+                                          .withOpacity(0.7),
+                                ),
+                              ),
+                            )
+                            .toList(),
                   ),
-                )
-                .toList(),
-          )
-        ],
+                ),
+            ],
+          );
+        },
       ),
     );
   }

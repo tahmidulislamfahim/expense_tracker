@@ -26,7 +26,8 @@ class _ExpensesState extends State<Expenses> {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      builder: (ctx) => NewExpense(onAddExpense: _addExpense),
+      builder:
+          (ctx) => NewExpense(onAddExpense: _addExpense),
     );
   }
 
@@ -51,7 +52,10 @@ class _ExpensesState extends State<Expenses> {
     await _saveExpensesToStorage();
   }
 
-  void _editExpense(Expense updatedExpense, int index) async {
+  void _editExpense(
+    Expense updatedExpense,
+    int index,
+  ) async {
     setState(() {
       _registeredExpenses[index] = updatedExpense;
     });
@@ -59,7 +63,9 @@ class _ExpensesState extends State<Expenses> {
   }
 
   void _removeExpense(Expense expense) async {
-    final expenseIndex = _registeredExpenses.indexOf(expense);
+    final expenseIndex = _registeredExpenses.indexOf(
+      expense,
+    );
     setState(() {
       _registeredExpenses.remove(expense);
     });
@@ -74,7 +80,10 @@ class _ExpensesState extends State<Expenses> {
           label: 'Undo',
           onPressed: () async {
             setState(() {
-              _registeredExpenses.insert(expenseIndex, expense);
+              _registeredExpenses.insert(
+                expenseIndex,
+                expense,
+              );
             });
             await _saveExpensesToStorage();
           },
@@ -100,7 +109,8 @@ class _ExpensesState extends State<Expenses> {
 
   Future<void> _loadExpensesFromStorage() async {
     final prefs = await SharedPreferences.getInstance();
-    final List<String>? encodedExpenses = prefs.getStringList('expenses');
+    final List<String>? encodedExpenses = prefs
+        .getStringList('expenses');
     if (encodedExpenses != null) {
       setState(() {
         _registeredExpenses =
@@ -121,19 +131,25 @@ class _ExpensesState extends State<Expenses> {
   }
 
   double get _totalExpense {
-    return _registeredExpenses.fold(0.0, (sum, item) => sum + item.amount);
+    return _registeredExpenses.fold(
+      0.0,
+      (sum, item) => sum + item.amount,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
 
-    Widget mainContent = const Center(child: Text('No expenses found.'));
+    Widget mainContent = const Center(
+      child: Text('No expenses found.'),
+    );
     if (_registeredExpenses.isNotEmpty) {
       mainContent = ExpensesList(
         expenses: _registeredExpenses,
         onRemoveExpense: _removeExpense,
-        onEditExpenseTap: _openEditExpenseOverlay, // pass edit callback
+        onEditExpenseTap:
+            _openEditExpenseOverlay, // pass edit callback
       );
     }
 
@@ -145,7 +161,9 @@ class _ExpensesState extends State<Expenses> {
                 children: [
                   Chart(expenses: _registeredExpenses),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                    ),
                     child: Text(
                       'Total: \$${_totalExpense.toStringAsFixed(2)}',
                       style: const TextStyle(
@@ -161,10 +179,18 @@ class _ExpensesState extends State<Expenses> {
                 children: [
                   Expanded(
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Chart(expenses: _registeredExpenses),
+                        Flexible(
+                          child: Chart(
+                            expenses: _registeredExpenses,
+                          ),
+                        ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          padding:
+                              const EdgeInsets.symmetric(
+                                vertical: 8.0,
+                              ),
                           child: Text(
                             'Total: \$${_totalExpense.toStringAsFixed(2)}',
                             style: const TextStyle(
@@ -184,7 +210,8 @@ class _ExpensesState extends State<Expenses> {
         onPressed: _openAddExpenseOverlay,
         child: const Icon(Icons.add),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.endFloat,
     );
   }
 }
