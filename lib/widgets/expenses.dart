@@ -33,6 +33,7 @@ class _ExpensesState extends State<Expenses> {
 
   void _openEditExpenseOverlay(Expense expense, int index) {
     showModalBottomSheet(
+      useSafeArea: true,
       isScrollControlled: true,
       context: context,
       builder:
